@@ -9,6 +9,8 @@ import com.example.demo.repository.BookRepository;
 import com.example.demo.repository.ReaderRepository;
 import com.example.demo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +30,7 @@ public class LibraryService {
     private AuthorRepository authorRepository;
 
     public Transaction executionTransaction(Long bookId, Long readerId, String transactionType) {
+        validateUserAuthentication();
         Reader reader = readerRepository.findById(readerId).orElseThrow(() -> new RuntimeException("Reader not found."));
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found."));
 
@@ -41,6 +44,7 @@ public class LibraryService {
     }
 
     public Author getMostPopularAuthor(LocalDateTime startDate, LocalDateTime endDate) {
+        validateUserAuthentication();
         List<Transaction> transactions = transactionRepository.findAll();
         Map<Author, Integer> authorCount = new HashMap<>();
 
@@ -65,6 +69,7 @@ public class LibraryService {
     }
 
     public Reader getMostActiveReader() {
+        validateUserAuthentication();
         List<Transaction> transactions = transactionRepository.findAll();
         Map<Reader, Integer> readerCount = new HashMap<>();
 
@@ -101,5 +106,11 @@ public class LibraryService {
             return Integer.compare(unreturnedCount.get(r2), unreturnedCount.get(r1));
         });
         return readers;
+    }
+    private void validateUserAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("User not authenticated.");
+        }
     }
 }
