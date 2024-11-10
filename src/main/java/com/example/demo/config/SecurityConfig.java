@@ -22,9 +22,27 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 public class SecurityConfig {
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private JwtDecoder jwtDecoder;
     @Autowired
     private CustomUserDetailsService userService;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector)
+            throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/library/transaction", "/api/library/popular-author",
+                                "/api/library/most-read-client")
+                        .authenticated() // методы требуют аутентификации
+                        .requestMatchers("/api/library/public-endpoint").permitAll() // метод обoедоступный
+                        .anyRequest().permitAll()) // другие запросы также требуют аутентификации
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder)))
+                .httpBasic(Customizer.withDefaults())
+                .build();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
