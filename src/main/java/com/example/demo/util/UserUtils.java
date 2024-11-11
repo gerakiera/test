@@ -24,4 +24,14 @@ public class UserUtils {
         var login = authentication.getName();
         return userRepository.findByLogin(login).get();
     }
+
+
+    @Bean
+    public User createEmployee() {
+        var admin = new User();
+        admin.setLogin("Kris");
+        admin.setPasswordDigest("qwerty");
+        userRepository.save(admin);
+        return admin;
+    }
 }

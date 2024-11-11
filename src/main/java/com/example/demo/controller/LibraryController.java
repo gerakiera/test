@@ -22,20 +22,20 @@ public class LibraryController {
     private LibraryService libraryService;
 
     @PostMapping("/transaction")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     public Transaction executionTransaction(@RequestParam Long bookId, @RequestParam Long readerId,
                                             @RequestParam String transactionType) {
         return libraryService.executionTransaction(bookId, readerId, transactionType);
     }
 
     @GetMapping("/popular-author")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     public Author getMostPopularAuthor(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
         return libraryService.getMostPopularAuthor(startDate, endDate);
     }
 
     @GetMapping("/most-active-reader")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     public Reader getMostActiveReader() {
         return libraryService.getMostActiveReader();
     }
