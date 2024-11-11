@@ -10,3 +10,6 @@
 
 Запуск из директории проекта:  
 `make run`
+
+Стек:
+Java, Gradle, Spring Boot, Spring Security, PostgreSQL, JPA, Lombok, Make, тестирование с Postman
