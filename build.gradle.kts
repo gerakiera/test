@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-	mainClass = "example.demo.LibraryApplication"
+	mainClass = "com.example.demo.LibraryApplication"
 }
 
 group = "com.example"
